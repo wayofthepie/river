@@ -26,7 +26,8 @@ class TaskQueue(reactiveRedisConnection: ReactiveRedisConnection, private val ri
     private final val listOps = reactiveRedisConnection.listCommands()
     private final val serializedTask = serialize(stringSerializer, TASK_QUEUE_KEY)
 
-    data class TaskEntity(@JsonProperty("id") val id: UUID, @JsonProperty("label") val label: String)
+    data class TaskEntity(@JsonProperty("id") val id: UUID,
+                          @JsonProperty("label") val label: String)
 
     fun push(task: Task): Mono<Either<String, UUID>> {
         return listOps.lLen(serializedTask).flatMap { size ->

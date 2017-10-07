@@ -50,8 +50,8 @@ class TaskQueueTest {
         val taskToPersist = Task(label = label)
         val serializedTaskKey = ByteBuffer.wrap(stringSerializer.serialize("RiverTaskQueue"))
         val taskQueue = initTaskQueue(reactiveRedisConnMock, RiverProperties(3L))
-
         val captor: ArgumentCaptor<List<ByteBuffer>> = ArgumentCaptor.forClass(List::class.java as Class<List<ByteBuffer>>)
+        
         whenever(listOpsMock.lLen(serializedTaskKey)).thenReturn(2L.toMono())
         whenever(listOpsMock.lPush(any(), any())).thenReturn(3L.toMono())
 

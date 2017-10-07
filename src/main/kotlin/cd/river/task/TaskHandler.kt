@@ -15,7 +15,7 @@ import java.net.URI
 
 @Component
 class TaskHandler(private val taskQueue: TaskQueue) {
-    fun handle(req: ServerRequest): Mono<ServerResponse> {
+    fun create(req: ServerRequest): Mono<ServerResponse> {
         fun handleError(e: String) = status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(BodyInserters.fromObject("Failed to add task to queue!\n" + e + "\n"))
 

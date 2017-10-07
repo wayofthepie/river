@@ -12,7 +12,7 @@ class Routes(private val taskHandler: TaskHandler) {
     @Bean
     fun router() = router {
         accept(MediaType.APPLICATION_JSON).nest {
-            POST("/", taskHandler::handle)
+            POST("/", taskHandler::create)
         }
     }
 }
