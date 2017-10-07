@@ -29,20 +29,18 @@ class TaskQueue(reactiveRedisConnection: ReactiveRedisConnection, private val ri
     data class TaskEntity(@JsonProperty("id") val id: UUID,
                           @JsonProperty("label") val label: String)
 
-    fun push(task: Task): Mono<Either<String, UUID>> {
-        return listOps.lLen(serializedTask).flatMap { size ->
-            if (size < riverProperties.queueLimit) {
-                val id = UUID.randomUUID()
-                val entity = TaskEntity(id, task.label)
-                val toPersist = listOf(serialize(jsonSerializer, entity))
-                listOps.lPush(serializedTask, toPersist).map { _ -> Right(id) }
-            } else {
-                Left(QUEUE_LIMIT_REACHED_MSG).toMono()
-            }
+    fun push(task: Task): Mono<Either<String, UUID>> = listOps.lLen(serializedTask).flatMap { size ->
+        if (size < riverProperties.queueLimit) {
+            val id = UUID.randomUUID()
+            val entity = TaskEntity(id, task.label)
+            val toPersist = listOf(serialize(jsonSerializer, entity))
+            listOps.lPush(serializedTask, toPersist).map { _ -> Right(id) }
+        } else {
+            Left(QUEUE_LIMIT_REACHED_MSG).toMono()
         }
     }
 
-    private final fun <T> serialize(serializer: RedisSerializer<T>, value: T): ByteBuffer {
-        return ByteBuffer.wrap(serializer.serialize(value))
-    }
+    private final fun <T> serialize(serializer: RedisSerializer<T>, value: T): ByteBuffer =
+            ByteBuffer.wrap(serializer.serialize(value))
+
 }
